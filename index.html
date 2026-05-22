@@ -5,7 +5,46 @@ const firebaseConfig = {
   storageBucket: "vincenzo-hub.firebasestorage.app",
   messagingSenderId: "499010425304",
   appId: "1:499010425304:web:fa022bd768ccb6854f62ad"
-<script>
+<script><script>
+const db = firebase.firestore();
+
+// PRODUCTS
+function loadProducts(){
+  db.collection("products").get().then((snapshot)=>{
+    let html = "";
+
+    snapshot.forEach((doc)=>{
+      let p = doc.data();
+
+      html += `<div>
+        📱 ${p.name} - ${p.price} TSh (${p.category})
+      </div>`;
+    });
+
+    document.getElementById("products").innerHTML = html;
+  });
+}
+
+// NEWS
+function loadNews(){
+  db.collection("news").get().then((snapshot)=>{
+    let html = "";
+
+    snapshot.forEach((doc)=>{
+      let n = doc.data();
+
+      html += `<div>
+        📰 <b>${n.title}</b><br>${n.content}
+      </div>`;
+    });
+
+    document.getElementById("news").innerHTML = html;
+  });
+}
+
+loadProducts();
+loadNews();
+</script>
   const firebaseConfig = {
     apiKey: "WEKA_HAPA",
     authDomain: "WEKA_HAPA",
