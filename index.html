@@ -1,24 +1,123 @@
-<h1>TEST 123</h1>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Vincenzo Hub</title>
+<meta charset="UTF-8">
+<title>VincenzoHub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f3f4f6;
+}
+
+header {
+  background: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #111;
+  color: white;
+}
+
+.container {
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+</style>
+
 </head>
+
 <body>
-  <h1>Karibu Vincenzo Hub</h1>
-  <p>Hii ni website yangu ya kwanza live!</p>
+
+<header>VincenzoHub</header>
+
+<nav>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('shop')">Shop</button>
+<button onclick="showPage('pay')">Pay</button>
+</nav>
+
+<div class="container">
+
+<!-- HOME -->
+<div id="home">
+  <div class="card">
+    <h2>Welcome to VincenzoHub</h2>
+    <p>Membership + Product Marketplace using HaloPesa</p>
+  </div>
+</div>
+
+<!-- SHOP -->
+<div id="shop" style="display:none">
+  <div class="card">
+    <h3>Shoes</h3>
+    <p>20,000 TSh</p>
+    <button>Buy</button>
+  </div>
+
+  <div class="card">
+    <h3>Watch</h3>
+    <p>35,000 TSh</p>
+    <button>Buy</button>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div id="pay" style="display:none">
+  <div class="card">
+    <h2>Pay via HaloPesa</h2>
+    <p>Send money to:</p>
+    <h3>0618779588</h3>
+
+    <input placeholder="Name">
+    <input placeholder="Phone">
+    <input placeholder="Transaction Code">
+
+    <button>Submit Payment</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPage(page){
+  document.getElementById("home").style.display="none";
+  document.getElementById("shop").style.display="none";
+  document.getElementById("pay").style.display="none";
+
+  document.getElementById(page).style.display="block";
+}
+</script>
+
 </body>
 </html>
-**vincenzohub/Vincenzohub** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
