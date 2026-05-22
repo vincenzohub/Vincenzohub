@@ -1,107 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>👑 Vincenzo Hub</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👑 Vincenzo Hub</title>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-    body{
-      margin:0;
-      padding:10px;
-      background:black;
-      color:white;
-      font-family:Arial;
-    }
+<style>
 
-    .logo-box{
-      text-align:center;
-      padding:20px;
-    }
+body{
+margin:0;
+padding:10px;
+background:black;
+color:white;
+font-family:Arial;
+}
 
-    .logo-box img{
-      width:180px;
-      border-radius:20px;
-      border:3px solid gold;
-      box-shadow:0 0 25px gold;
-    }
+.logo-box{
+text-align:center;
+padding:20px;
+}
 
-    h1{
-      color:gold;
-      font-size:42px;
-      text-shadow:0 0 15px gold;
-      margin-top:15px;
-    }
+.logo-box img{
+width:180px;
+border-radius:20px;
+border:3px solid gold;
+box-shadow:0 0 25px gold;
+}
 
-    h2,h3{
-      color:gold;
-    }
+h1{
+color:gold;
+font-size:42px;
+text-shadow:0 0 15px gold;
+margin-top:15px;
+}
 
-    p{
-      color:white;
-    }
+h2,h3{
+color:gold;
+}
 
-    .box{
-      background:#111;
-      border:1px solid gold;
-      border-radius:15px;
-      padding:15px;
-      margin:15px 0;
-      box-shadow:0 0 10px rgba(255,215,0,0.4);
-    }
+.box{
+background:#111;
+border:1px solid gold;
+border-radius:15px;
+padding:15px;
+margin:15px 0;
+box-shadow:0 0 10px rgba(255,215,0,0.4);
+}
 
-    input, textarea{
-      width:95%;
-      padding:12px;
-      margin:8px 0;
-      border:none;
-      border-radius:10px;
-      background:#222;
-      color:white;
-    }
+input, textarea{
+width:95%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+background:#222;
+color:white;
+}
 
-    button{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border:none;
-      border-radius:10px;
-      background:gold;
-      color:black;
-      font-weight:bold;
-      cursor:pointer;
-      font-size:16px;
-    }
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:gold;
+color:black;
+font-weight:bold;
+cursor:pointer;
+font-size:16px;
+}
 
-    .card{
-      width:220px;
-      display:inline-block;
-      margin:10px;
-      padding:10px;
-      border-radius:15px;
-      background:#1a1a1a;
-      border:1px solid gold;
-      text-align:center;
-      box-shadow:0 0 10px rgba(255,215,0,0.3);
-    }
+#products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:15px;
+}
 
-    .card img{
-      width:150px;
-      height:150px;
-      border-radius:10px;
-    }
+.card{
+padding:10px;
+border-radius:15px;
+background:#1a1a1a;
+border:1px solid gold;
+text-align:center;
+box-shadow:0 0 10px rgba(255,215,0,0.3);
+}
 
-    #adminPanel{
-      display:none;
-    }
+.card img{
+width:160px;
+height:160px;
+border-radius:10px;
+}
 
-  </style>
+.old-price{
+color:gray;
+text-decoration:line-through;
+}
+
+.new-price{
+color:gold;
+font-size:22px;
+font-weight:bold;
+}
+
+#adminPanel{
+display:none;
+}
+
+</style>
 
 </head>
 
@@ -151,7 +162,8 @@ Jiunge kupata offers na discounts maalum.
 </p>
 
 <p>
-💰 Ada: <b>15,000 TSh</b>
+💰 Membership Fee:
+<b>15,000 TSh</b>
 </p>
 
 <p>
@@ -232,23 +244,143 @@ font-size:16px;
 </b>
 </p>
 
-<div id="products"
-style="
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:15px;
-">
+<div id="products"></div>
+
 </div>
+
+<!-- 📰 NEWS -->
+<div class="box">
+
+<h2>📰 Latest News</h2>
+
+<div id="news"></div>
 
 </div>
 
 <script>
 
-/* 🛒 ALL PHONES */
+/* 🔥 FIREBASE */
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyBJwcABL0q4clpRwxWXHGlB6d0sSRnsq_Y",
+
+authDomain: "vincenzo-hub.firebaseapp.com",
+
+projectId: "vincenzo-hub",
+
+storageBucket: "vincenzo-hub.firebasestorage.app",
+
+messagingSenderId: "499010425304",
+
+appId: "1:499010425304:web:fa022bd768ccb6854f62ad"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+const db = firebase.firestore();
+
+let isAdmin = false;
+
+/* 🔐 SIGNUP */
+
+function signup(){
+
+auth.createUserWithEmailAndPassword(
+
+email.value,
+password.value
+
+)
+
+.then(()=>{
+
+alert("🔥 Account Created");
+
+})
+
+.catch(e=>alert(e.message));
+
+}
+
+/* 🔐 LOGIN */
+
+function login(){
+
+auth.signInWithEmailAndPassword(
+
+email.value,
+password.value
+
+)
+
+.then(()=>{
+
+if(
+
+email.value==="jacksonmakele3@gmail.com"
+&&
+password.value==="jkm123@@@"
+
+){
+
+isAdmin = true;
+
+adminPanel.style.display = "block";
+
+alert("👑 Welcome Admin");
+
+}
+
+else{
+
+alert("🔥 Login Success");
+
+}
+
+})
+
+.catch(e=>alert(e.message));
+
+}
+
+/* 🎁 GIFT CLUB */
+
+function joinGiftClub(){
+
+alert(
+
+`👑 VINCENZO GIFT CLUB
+
+💰 Membership Fee:
+15,000 TSh
+
+💳 Payment Method:
+Halopesa
+
+📞 Number:
+0618779588
+
+📋 HOW TO JOIN:
+
+1. Open Halopesa
+2. Send 15,000 TSh
+3. Use your real name
+4. Save payment message
+5. Wait for admin approval
+
+🔥 Welcome To Vincenzo Hub 👑`
+
+);
+
+}
+
+/* 🛒 PRODUCTS */
 
 const productsData = [
-
-/* 🍎 IPHONE */
 
 {
 name:"iPhone 15 Pro Max",
@@ -258,38 +390,10 @@ img:"https://via.placeholder.com/250?text=iPhone+15+Pro+Max"
 },
 
 {
-name:"iPhone 15 Pro",
-price:500000,
-cat:"iPhone",
-img:"https://via.placeholder.com/250?text=iPhone+15+Pro"
-},
-
-{
-name:"iPhone 15 Plus",
-price:500000,
-cat:"iPhone",
-img:"https://via.placeholder.com/250?text=iPhone+15+Plus"
-},
-
-{
-name:"iPhone 15",
-price:500000,
-cat:"iPhone",
-img:"https://via.placeholder.com/250?text=iPhone+15"
-},
-
-{
 name:"iPhone 16 Pro Max",
 price:500000,
 cat:"iPhone",
 img:"https://via.placeholder.com/250?text=iPhone+16+Pro+Max"
-},
-
-{
-name:"iPhone 16 Pro",
-price:500000,
-cat:"iPhone",
-img:"https://via.placeholder.com/250?text=iPhone+16+Pro"
 },
 
 {
@@ -328,13 +432,6 @@ img:"https://via.placeholder.com/250?text=Z+Fold+6"
 },
 
 {
-name:"Samsung Z Flip 5",
-price:500000,
-cat:"Samsung",
-img:"https://via.placeholder.com/250?text=Z+Flip+5"
-},
-
-{
 name:"Samsung Z Flip 6",
 price:500000,
 cat:"Samsung",
@@ -361,25 +458,15 @@ html += `
 
 <p>${p.cat}</p>
 
-<p style="
-color:gray;
-text-decoration:line-through;
-">
+<p class="old-price">
 2,000,000 TSh
 </p>
 
-<b style="
-color:gold;
-font-size:22px;
-">
+<p class="new-price">
 ${p.price.toLocaleString()} TSh
-</b>
+</p>
 
-<p style="
-margin-top:10px;
-color:white;
-font-size:14px;
-">
+<p>
 ✅ Lipa 100,000 TSh kwanza<br>
 ✅ Tumia kwa miezi 2<br>
 ✅ Malizia 400,000 TSh baadaye
@@ -445,275 +532,25 @@ Halopesa
 
 }
 
-</script><!-- 🛒 PRODUCTS -->
-<div class="box">
-
-<h2>🛒 Products</h2>
-
-<div id="products"></div>
-
-</div>
-
-<!-- 📰 NEWS -->
-<div class="box">
-
-<h2>📰 Latest News</h2>
-
-<div id="news"></div>
-
-</div>
-
-<script>
-
-/* 🔥 FIREBASE */
-
-const firebaseConfig = {
-
-  apiKey: "AIzaSyBJwcABL0q4clpRwxWXHGlB6d0sSRnsq_Y",
-
-  authDomain: "vincenzo-hub.firebaseapp.com",
-
-  projectId: "vincenzo-hub",
-
-  storageBucket: "vincenzo-hub.firebasestorage.app",
-
-  messagingSenderId: "499010425304",
-
-  appId: "1:499010425304:web:fa022bd768ccb6854f62ad"
-
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const auth = firebase.auth();
-
-const db = firebase.firestore();
-
-let isAdmin = false;
-
-/* 🔐 SIGNUP */
-
-function signup(){
-
-  auth.createUserWithEmailAndPassword(
-
-    email.value,
-
-    password.value
-
-  )
-
-  .then(()=>{
-
-    alert("🔥 Account Created");
-
-  })
-
-  .catch(e=>alert(e.message));
-
-}
-
-/* 🔐 LOGIN */
-
-function login(){
-
-  auth.signInWithEmailAndPassword(
-
-    email.value,
-
-    password.value
-
-  )
-
-  .then(()=>{
-
-    if(
-      email.value==="jacksonmakele3@gmail.com"
-      &&
-      password.value==="jkm123@@@"
-    ){
-
-      isAdmin=true;
-
-      adminPanel.style.display="block";
-
-      alert("👑 Welcome Admin");
-
-    }
-
-    else{
-
-      alert("🔥 Login Success");
-
-    }
-
-  })
-
-  .catch(e=>alert(e.message));
-
-}
-
-/* 🎁 GIFT CLUB */
-
-function joinGiftClub(){
-
-  alert(
-
-`👑 VINCENZO GIFT CLUB
-
-💰 Membership Fee:
-15,000 TSh
-
-💳 Payment Method:
-Halopesa
-
-📞 Number:
-0618779588
-
-📋 HOW TO JOIN:
-
-1. Open Halopesa
-2. Send 15,000 TSh
-3. Use your real name
-4. Save payment message
-5. Wait for admin approval
-
-🔥 Welcome To Vincenzo Hub 👑`
-
-  );
-
-}
-
-/* 🛒 PRODUCTS */
-
-const productsData = [
-
-{
-name:"iPhone 15 Pro Max",
-price:2000000,
-cat:"iPhone",
-img:"https://via.placeholder.com/200?text=iPhone+15+Pro+Max"
-},
-
-{
-name:"Samsung S24 Ultra",
-price:2000000,
-cat:"Samsung",
-img:"https://via.placeholder.com/200?text=Samsung+S24+Ultra"
-},
-
-{
-name:"Infinix Note 40",
-price:400000,
-cat:"Infinix",
-img:"https://via.placeholder.com/200?text=Infinix+Note+40"
-},
-
-{
-name:"Samsung Z Fold 5",
-price:2500000,
-cat:"Samsung",
-img:"https://via.placeholder.com/200?text=Z+Fold+5"
-},
-
-{
-name:"iPhone 14 Pro",
-price:1600000,
-cat:"iPhone",
-img:"https://via.placeholder.com/200?text=iPhone+14+Pro"
-}
-
-];
-
-function loadProducts(){
-
-  let html="";
-
-  productsData.forEach(p=>{
-
-    html += `
-
-    <div class="card">
-
-      <img src="${p.img}">
-
-      <h3>${p.name}</h3>
-
-      <p>${p.cat}</p>
-
-      <b>${p.price.toLocaleString()} TSh</b>
-
-      <button onclick="orderProduct('${p.name}', ${p.price})">
-
-      🛒 Order Now
-
-      </button>
-
-    </div>
-
-    `;
-
-  });
-
-  products.innerHTML = html;
-
-}
-
-loadProducts();
-
-/* 🛒 ORDER */
-
-function orderProduct(productName, productPrice){
-
-  alert(
-
-`👑 VINCENZO HUB ORDER
-
-🛒 Product:
-${productName}
-
-💰 Price:
-${productPrice.toLocaleString()} TSh
-
-💳 Payment:
-Halopesa
-
-📞 Number:
-0618779588
-
-📋 HOW TO PAY:
-
-1. Open Halopesa
-2. Send Money
-3. Use Your Real Name
-4. Save Payment Message
-5. Wait For Confirmation
-
-🔥 Thank You For Shopping With Vincenzo Hub 👑`
-
-  );
-
-}
-
 /* ➕ ADD PRODUCT */
 
 function addProduct(){
 
-  productsData.push({
+productsData.push({
 
-    name:pname.value,
+name:pname.value,
 
-    price:Number(pprice.value),
+price:Number(pprice.value),
 
-    cat:pcat.value,
+cat:pcat.value,
 
-    img:pimg.value
+img:pimg.value
 
-  });
+});
 
-  loadProducts();
+loadProducts();
 
-  alert("🔥 Product Added");
+alert("🔥 Product Added");
 
 }
 
@@ -721,33 +558,33 @@ function addProduct(){
 
 function loadNews(){
 
-  db.collection("news")
+db.collection("news")
 
-  .onSnapshot(snap=>{
+.onSnapshot(snap=>{
 
-    let html="";
+let html="";
 
-    snap.forEach(d=>{
+snap.forEach(d=>{
 
-      let n=d.data();
+let n=d.data();
 
-      html += `
+html += `
 
-      <div class="box">
+<div class="box">
 
-      <h3>${n.title}</h3>
+<h3>${n.title}</h3>
 
-      <p>${n.content}</p>
+<p>${n.content}</p>
 
-      </div>
+</div>
 
-      `;
+`;
 
-    });
+});
 
-    news.innerHTML = html;
+news.innerHTML = html;
 
-  });
+});
 
 }
 
@@ -757,15 +594,15 @@ loadNews();
 
 function addNews(){
 
-  db.collection("news").add({
+db.collection("news").add({
 
-    title:ntitle.value,
+title:ntitle.value,
 
-    content:ncontent.value
+content:ncontent.value
 
-  });
+});
 
-  alert("🔥 News Added");
+alert("🔥 News Added");
 
 }
 
