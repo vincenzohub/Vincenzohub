@@ -124,7 +124,42 @@ button {cursor:pointer;}
 
 <!-- PRODUCTS -->
 <section id="products">
-<h2>Pizza Products</h2>
+<h1>🛒 My Products</h1>
+<section id="products"></section>
+
+<script>
+const db = firebase.firestore();
+
+function loadProducts(){
+  db.collection("products").get().then((snapshot)=>{
+    let htmlPhones = "<h2>📱 Phones</h2>";
+    let htmlComputers = "<h2>💻 Computers</h2>";
+
+    snapshot.forEach((doc)=>{
+      let p = doc.data();
+
+      if(p.category === "phone"){
+        htmlPhones += `<div class="card">
+          📱 ${p.name} - ${p.price} TSh
+        </div>`;
+      }
+
+      if(p.category === "computer"){
+        htmlComputers += `<div class="card">
+          💻 ${p.name} - ${p.price} TSh
+        </div>`;
+      }
+    });
+
+    document.getElementById("products").innerHTML = htmlPhones + htmlComputers;
+  });
+}
+
+loadProducts();
+</script>
+<div id="products">
+  Loading products...
+</div><h2>Pizza Products</h2>
 
 <div class="card">
 🍕 Chicken Pizza - 12000 TSh
@@ -206,6 +241,34 @@ alert("Wrong login");
 }
 }
 </script>
+<script>
+const db = firebase.firestore();
 
+function loadProducts(){
+
+  db.collection("products").get().then((snapshot)=>{
+
+    let html = "";
+
+    snapshot.forEach((doc)=>{
+      let p = doc.data();
+
+      html += `
+        <div style="border:1px solid #ccc; margin:10px; padding:10px;">
+          <h3>${p.name}</h3>
+          <p>💰 ${p.price} TSh</p>
+          <p>📦 ${p.category}</p>
+        </div>
+      `;
+    });
+
+    document.getElementById("products").innerHTML = html;
+
+  });
+
+}
+
+loadProducts();
+</script>
 </body>
 </html>
