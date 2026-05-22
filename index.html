@@ -1,3 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vincenzo Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Firebase (compat version for simplicity) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    body { font-family: Arial; background:#f5f5f5; padding:10px; }
+    input, textarea { width:95%; padding:10px; margin:5px 0; }
+    button { width:100%; padding:10px; margin:5px 0; cursor:pointer; }
+    .box { background:white; padding:10px; margin:10px 0; border-radius:10px; }
+    .card {
+      border:1px solid #ddd;
+      border-radius:10px;
+      padding:10px;
+      margin:10px;
+      display:inline-block;
+      width:220px;
+      text-align:center;
+      background:white;
+    }
+    .card img { width:150px; height:150px; border-radius:10px; }
+    #adminPanel { display:none; }
+  </style>
+</head>
+
+<body>
+
+<h1>🚀 VINCENZO HUB</h1>
+
+<!-- 🔐 AUTH -->
+<div class="box">
+<h2>🔐 Login / Signup</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="signup()">Sign Up</button>
+<button onclick="login()">Login</button>
+</div>
+
+<!-- 💳 PAYMENT -->
+<div class="box">
+<h2>🎁 Gift Club Membership</h2>
+<p>Jiunge kupata offers na discounts</p>
+
+<p>💰 Ada: <b>TSh 15,000</b></p>
+
+<h3>📱 Halopesa</h3>
+<p>📞 0618779588</p>
+
+<p>Baada ya kulipa subiri approval ya admin.</p>
+</div>
+
+<!-- 👨‍💻 ADMIN PANEL -->
+<div class="box" id="adminPanel">
+
+<h2>👨‍💻 Admin Panel</h2>
+
+<h3>➕ Add Product</h3>
+<input id="pname" placeholder="Product Name">
+<input id="pprice" placeholder="Price">
+<input id="pcat" placeholder="Category">
+<input id="pimg" placeholder="Image URL">
+<button onclick="addProduct()">Add Product</button>
+
+<h3>📰 Add News</h3>
+<input id="ntitle" placeholder="News Title">
+<textarea id="ncontent" placeholder="News Content"></textarea>
+<button onclick="addNews()">Add News</button>
+
+<h3>🎁 Approve Membership</h3>
+<input id="approveEmail" placeholder="User Email">
+<button onclick="approveMember()">Approve Member</button>
+
+</div>
+
+<!-- 🛒 PRODUCTS -->
+<div class="box">
+<h2>🛒 Products</h2>
+<div id="products"></div>
+</div>
+
+<!-- 📰 NEWS -->
+<div class="box">
+<h2>📰 News</h2>
+<div id="news"></div>
+</div>
+
+<script>
+/* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBJwcABL0q4clpRwxWXHGlB6d0sSRnsq_Y",
   authDomain: "vincenzo-hub.firebaseapp.com",
@@ -6,369 +102,112 @@ const firebaseConfig = {
   messagingSenderId: "499010425304",
   appId: "1:499010425304:web:fa022bd768ccb6854f62ad"
 };
-<script><script>
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
 const db = firebase.firestore();
 
-// PRODUCTS
+let currentUser = null;
+let isAdmin = false;
+
+/* 🔐 SIGNUP */
+function signup(){
+  auth.createUserWithEmailAndPassword(email.value, password.value)
+  .then(()=> alert("Account created 🔥"))
+  .catch(e=> alert(e.message));
+}
+
+/* 🔐 LOGIN + ROLE CHECK */
+function login(){
+  auth.signInWithEmailAndPassword(email.value, password.value)
+  .then(async (res)=>{
+
+    currentUser = res.user;
+
+    let doc = await db.collection("users").doc(currentUser.uid).get();
+
+    if(doc.exists && doc.data().role === "admin"){
+      isAdmin = true;
+      adminPanel.style.display = "block";
+      alert("Welcome Admin 🔥");
+    } else {
+      isAdmin = false;
+      adminPanel.style.display = "none";
+      alert("Login success 🔥");
+    }
+
+  })
+  .catch(e=> alert(e.message));
+}
+
+/* 🛒 DEFAULT PRODUCTS */
+const productsData = [
+  {name:"iPhone 15 Pro Max", price:2000000, cat:"iPhone", img:"https://via.placeholder.com/200?text=iPhone+15+Pro+Max"},
+  {name:"Samsung S24 Ultra", price:2000000, cat:"Samsung", img:"https://via.placeholder.com/200?text=Samsung+S24+Ultra"},
+  {name:"Infinix Note 40", price:400000, cat:"Infinix", img:"https://via.placeholder.com/200?text=Infinix+Note+40"}
+];
+
 function loadProducts(){
-  db.collection("products").get().then((snapshot)=>{
-    let html = "";
-
-    snapshot.forEach((doc)=>{
-      let p = doc.data();
-
-      html += `<div>
-        📱 ${p.name} - ${p.price} TSh (${p.category})
-      </div>`;
-    });
-
-    document.getElementById("products").innerHTML = html;
+  let html="";
+  productsData.forEach(p=>{
+    html+=`
+      <div class="card">
+        <img src="${p.img}">
+        <h3>${p.name}</h3>
+        <p>${p.cat}</p>
+        <b>${p.price.toLocaleString()} TSh</b>
+        <button>Order Now</button>
+      </div>
+    `;
   });
+  products.innerHTML = html;
 }
-
-// NEWS
-function loadNews(){
-  db.collection("news").get().then((snapshot)=>{
-    let html = "";
-
-    snapshot.forEach((doc)=>{
-      let n = doc.data();
-
-      html += `<div>
-        📰 <b>${n.title}</b><br>${n.content}
-      </div>`;
-    });
-
-    document.getElementById("news").innerHTML = html;
-  });
-}
-
 loadProducts();
+
+/* 📰 NEWS */
+function loadNews(){
+  db.collection("news").onSnapshot(snap=>{
+    let html="";
+    snap.forEach(d=>{
+      let n=d.data();
+      html+=`<div class="box"><b>${n.title}</b><br>${n.content}</div>`;
+    });
+    news.innerHTML = html;
+  });
+}
+
+/* ➕ ADD PRODUCT */
+function addProduct(){
+  db.collection("products").add({
+    name:pname.value,
+    price:pprice.value,
+    category:pcat.value,
+    img:pimg.value
+  });
+  alert("Product added 🔥");
+}
+
+/* ➕ ADD NEWS */
+function addNews(){
+  db.collection("news").add({
+    title:ntitle.value,
+    content:ncontent.value
+  });
+  alert("News added 🔥");
+}
+
+/* 🎁 APPROVE MEMBER */
+function approveMember(){
+  db.collection("users").doc(approveEmail.value).set({
+    role:"member",
+    status:"approved"
+  });
+  alert("Member approved 🔥");
+}
+
 loadNews();
 </script>
-  const firebaseConfig = {
-  apiKey: "AIzaSyBJwcABL0q4clpRwxWXHGlB6d0sSRnsq_Y",
-  authDomain: "vincenzo-hub.firebaseapp.com",
-  projectId: "vincenzo-hub",
-  storageBucket: "vincenzo-hub.firebasestorage.app",
-  messagingSenderId: "499010425304",
-  appId: "1:499010425304:web:fa022bd768ccb6854f62ad"
-};
-  };
 
-  firebase.initializeApp(firebaseConfig);
-</script>
-};<!DOCTYPE html>
-<html>
-<head>
-  <title>Vincenzo Hub Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      padding-top: 80px;
-    }
-
-    input {
-      width: 80%;
-      padding: 10px;
-      margin: 10px;
-    }
-
-    button {
-      padding: 10px;
-      width: 85%;
-      margin: 10px;
-      cursor: pointer;
-      border: none;
-      border-radius: 5px;
-    }
-
-    .admin { background: red; color: white; }
-    .user { background: blue; color: white; }
-  </style>
-</head>
-
-<body>
-
-<h2>Vincenzo Hub Login</h2>
-
-<input id="email" placeholder="Email"><br>
-<input id="password" type="password" placeholder="Password"><br>
-
-<button class="admin" onclick="login('admin')">Login as Admin</button>
-<button class="user" onclick="login('user')">Login as User</button>
-
-<p id="msg"></p>
-
-<script>
-function login(type){
-  let email = document.getElementById("email").value;
-  let pass = document.getElementById("password").value;
-
-  // SIMPLE DEMO LOGIN (Firebase tutaongeza next step)
-  if(email && pass){
-
-    if(type === "admin"){
-      if(email.includes("admin")){
-        document.getElementById("msg").innerHTML = "Welcome Admin 🔥";
-        window.location.href = "#admin";
-      } else {
-        alert("Not admin account");
-      }
-    }
-
-    if(type === "user"){
-      document.getElementById("msg").innerHTML = "Welcome User 👤";
-      window.location.href = "#user";
-    }
-
-  } else {
-    alert("Fill all fields");
-  }
-}
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Vincenzo Hub</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body {font-family: Arial; margin:0; background:#0f172a; color:white;}
-header {background:#1e293b; padding:15px; text-align:center;}
-nav {display:flex; justify-content:center; gap:15px; background:#0b1220; padding:10px;}
-nav button {padding:10px; border:none; cursor:pointer; border-radius:5px;}
-section {display:none; padding:20px;}
-.active {display:block;}
-.card {background:#1e293b; padding:15px; margin:10px; border-radius:10px;}
-input, button {padding:10px; margin:5px; width:90%;}
-button {cursor:pointer;}
-.admin {background:red; color:white;}
-</style>
-
-</head>
-
-<body>
-
-<header>
-<h2>Vincenzo Hub</h2>
-</header>
-
-<nav>
-<button onclick="show('home')">Home</button>
-<button onclick="show('news')">News</button>
-<button onclick="show('products')">Products</button>
-<button onclick="show('gift')">Gift Club</button>
-<button onclick="show('admin')">Admin</button>
-</nav>
-
-<!-- HOME -->
-<section id="home" class="active">
-<h2>Welcome</h2>
-<p>News, Pizza Orders & Gift Membership Platform</p>
-</section>
-
-<!-- NEWS -->
-<section id="news">
-<h2>News</h2>
-<div class="card">Welcome to Vincenzo Hub news system</div>
-</section>
-
-<!-- PRODUCTS -->
-<section id="products">
-<h1>🛒 My Products</h1>
-<section id="products"></section>
-
-<script>
-const db = firebase.firestore();
-
-function loadProducts(){
-  db.collection("products").get().then((snapshot)=>{
-    let htmlPhones = "<h2>📱 Phones</h2>";
-    let htmlComputers = "<h2>💻 Computers</h2>";
-
-    snapshot.forEach((doc)=>{
-      let p = doc.data();
-
-      if(p.category === "phone"){
-        htmlPhones += `<div class="card">
-          📱 ${p.name} - ${p.price} TSh
-        </div>`;
-      }
-
-      if(p.category === "computer"){
-        htmlComputers += `<div class="card">
-          💻 ${p.name} - ${p.price} TSh
-        </div>`;
-      }
-    });
-
-    document.getElementById("products").innerHTML = htmlPhones + htmlComputers;
-  });
-}
-
-loadProducts();
-</script>
-<div id="products">
-  Loading products...
-</div><h2>Pizza Products</h2>
-
-<div class="card">
-🍕 Chicken Pizza - 12000 TSh
-<button>Order</button>
-</div>
-
-<div class="card">
-🍕 Cheese Pizza - 10000 TSh
-<button>Order</button>
-</div>
-
-<p>💳 Pay via Halopesa: 0618779588</p>
-</section>
-
-<!-- GIFT CLUB -->
-<section id="gift">
-<h2>🎁 Gift Club (Members Only)</h2>
-<p>Membership Fee: 15000 TSh</p>
-
-<button onclick="pay()">I Have Paid</button>
-
-<p id="giftAccess" style="color:red;">❌ Access Locked</p>
-</section>
-
-<!-- ADMIN -->
-<section id="admin">
-<h2>Admin Login</h2>
-
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
-
-<div id="adminPanel" style="display:none;">
-<h3>Admin Dashboard</h3>
-
-<div class="card">
-Add News:
-<input placeholder="News text">
-<button>Add</button>
-</div>
-
-<div class="card">
-Add Product:
-<input placeholder="Product name">
-<input placeholder="Price">
-<button>Add</button>
-</div>
-
-</div>
-
-</section>
-
-<script>
-function show(id){
-document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-}
-
-// SIMPLE MEMBER SYSTEM (demo)
-let paid = false;
-
-function pay(){
-alert("Malipo yako Halopesa 0618779588. Subiri approval ya admin.");
-paid = true;
-document.getElementById("giftAccess").innerText = "⏳ Pending Approval";
-document.getElementById("giftAccess").style.color = "yellow";
-}
-
-// ADMIN LOGIN (SIMPLE DEMO)
-function login(){
-let email = document.getElementById("email").value;
-let pass = document.getElementById("password").value;
-
-if(email=="admin@gmail.com" && pass=="1234"){
-document.getElementById("adminPanel").style.display="block";
-alert("Welcome Admin");
-} else {
-alert("Wrong login");
-}
-}
-</script>
-<script>
-const db = firebase.firestore();
-
-function loadProducts(){
-
-  db.collection("products").get().then((snapshot)=>{
-
-    let html = "";
-
-    snapshot.forEach((doc)=>{
-      let p = doc.data();
-
-      html += `
-        <div style="border:1px solid #ccc; margin:10px; padding:10px;">
-          <h3>${p.name}</h3>
-          <p>💰 ${p.price} TSh</p>
-          <p>📦 ${p.category}</p>
-        </div>
-      `;
-    });
-
-    document.getElementById("products").innerHTML = html;
-
-  });
-
-}
-
-loadProducts();
-</script>
 </body>
 </html>
-<script>
-const db = firebase.firestore();
-
-// PRODUCTS
-function loadProducts(){
-  db.collection("products").get().then((snapshot)=>{
-    let html = "";
-
-    snapshot.forEach((doc)=>{
-      let p = doc.data();
-
-      html += `<div>
-        📱 ${p.name} - ${p.price} TSh (${p.category})
-      </div>`;
-    });
-
-    document.getElementById("products").innerHTML = html;
-  });
-}
-
-// NEWS
-function loadNews(){
-  db.collection("news").get().then((snapshot)=>{
-    let html = "";
-
-    snapshot.forEach((doc)=>{
-      let n = doc.data();
-
-      html += `<div>
-        📰 <b>${n.title}</b><br>${n.content}
-      </div>`;
-    });
-
-    document.getElementById("news").innerHTML = html;
-  });
-}
-
-loadProducts();
-loadNews();
-</script>
