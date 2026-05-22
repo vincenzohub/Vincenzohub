@@ -2,120 +2,132 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>VincenzoHub</title>
+<title>Vincenzo Hub</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: Arial;
-  margin: 0;
-  background: #f3f4f6;
-}
-
-header {
-  background: white;
-  padding: 15px;
-  text-align: center;
-  font-size: 22px;
-  font-weight: bold;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px;
-}
-
-button {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #111;
-  color: white;
-}
-
-.container {
-  padding: 15px;
-}
-
-.card {
-  background: white;
-  padding: 15px;
-  margin-top: 10px;
-  border-radius: 10px;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-}
+body {font-family: Arial; margin:0; background:#0f172a; color:white;}
+header {background:#1e293b; padding:15px; text-align:center;}
+nav {display:flex; justify-content:center; gap:15px; background:#0b1220; padding:10px;}
+nav button {padding:10px; border:none; cursor:pointer; border-radius:5px;}
+section {display:none; padding:20px;}
+.active {display:block;}
+.card {background:#1e293b; padding:15px; margin:10px; border-radius:10px;}
+input, button {padding:10px; margin:5px; width:90%;}
+button {cursor:pointer;}
+.admin {background:red; color:white;}
 </style>
 
 </head>
 
 <body>
 
-<header>VincenzoHub</header>
+<header>
+<h2>Vincenzo Hub</h2>
+</header>
 
 <nav>
-<button onclick="showPage('home')">Home</button>
-<button onclick="showPage('shop')">Shop</button>
-<button onclick="showPage('pay')">Pay</button>
+<button onclick="show('home')">Home</button>
+<button onclick="show('news')">News</button>
+<button onclick="show('products')">Products</button>
+<button onclick="show('gift')">Gift Club</button>
+<button onclick="show('admin')">Admin</button>
 </nav>
 
-<div class="container">
-
 <!-- HOME -->
-<div id="home">
-  <div class="card">
-    <h2>Welcome to VincenzoHub</h2>
-    <p>Membership + Product Marketplace using HaloPesa</p>
-  </div>
+<section id="home" class="active">
+<h2>Welcome</h2>
+<p>News, Pizza Orders & Gift Membership Platform</p>
+</section>
+
+<!-- NEWS -->
+<section id="news">
+<h2>News</h2>
+<div class="card">Welcome to Vincenzo Hub news system</div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+<h2>Pizza Products</h2>
+
+<div class="card">
+🍕 Chicken Pizza - 12000 TSh
+<button>Order</button>
 </div>
 
-<!-- SHOP -->
-<div id="shop" style="display:none">
-  <div class="card">
-    <h3>Shoes</h3>
-    <p>20,000 TSh</p>
-    <button>Buy</button>
-  </div>
-
-  <div class="card">
-    <h3>Watch</h3>
-    <p>35,000 TSh</p>
-    <button>Buy</button>
-  </div>
+<div class="card">
+🍕 Cheese Pizza - 10000 TSh
+<button>Order</button>
 </div>
 
-<!-- PAYMENT -->
-<div id="pay" style="display:none">
-  <div class="card">
-    <h2>Pay via HaloPesa</h2>
-    <p>Send money to:</p>
-    <h3>0618779588</h3>
+<p>💳 Pay via Halopesa: 0618779588</p>
+</section>
 
-    <input placeholder="Name">
-    <input placeholder="Phone">
-    <input placeholder="Transaction Code">
+<!-- GIFT CLUB -->
+<section id="gift">
+<h2>🎁 Gift Club (Members Only)</h2>
+<p>Membership Fee: 15000 TSh</p>
 
-    <button>Submit Payment</button>
-  </div>
+<button onclick="pay()">I Have Paid</button>
+
+<p id="giftAccess" style="color:red;">❌ Access Locked</p>
+</section>
+
+<!-- ADMIN -->
+<section id="admin">
+<h2>Admin Login</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+
+<div id="adminPanel" style="display:none;">
+<h3>Admin Dashboard</h3>
+
+<div class="card">
+Add News:
+<input placeholder="News text">
+<button>Add</button>
+</div>
+
+<div class="card">
+Add Product:
+<input placeholder="Product name">
+<input placeholder="Price">
+<button>Add</button>
 </div>
 
 </div>
+
+</section>
 
 <script>
-function showPage(page){
-  document.getElementById("home").style.display="none";
-  document.getElementById("shop").style.display="none";
-  document.getElementById("pay").style.display="none";
+function show(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
 
-  document.getElementById(page).style.display="block";
+// SIMPLE MEMBER SYSTEM (demo)
+let paid = false;
+
+function pay(){
+alert("Malipo yako Halopesa 0618779588. Subiri approval ya admin.");
+paid = true;
+document.getElementById("giftAccess").innerText = "⏳ Pending Approval";
+document.getElementById("giftAccess").style.color = "yellow";
+}
+
+// ADMIN LOGIN (SIMPLE DEMO)
+function login(){
+let email = document.getElementById("email").value;
+let pass = document.getElementById("password").value;
+
+if(email=="admin@gmail.com" && pass=="1234"){
+document.getElementById("adminPanel").style.display="block";
+alert("Welcome Admin");
+} else {
+alert("Wrong login");
+}
 }
 </script>
 
