@@ -112,6 +112,581 @@ font-weight:bold;
 display:none;
 }
 
+</style>
+
+</head>
+
+<body>
+
+<!-- 👑 LOGO -->
+<div class="logo-box">
+
+<img src="logo.png">
+
+<h1>👑 VINCENZO HUB</h1>
+
+<p>
+Luxury Phones • Gift Club • Premium Tech
+</p>
+
+</div>
+
+<!-- 🔐 LOGIN -->
+<div class="box">
+
+<h2>🔐 Login / Signup</h2>
+
+<input id="email" placeholder="Email">
+
+<input id="password"
+type="password"
+placeholder="Password">
+
+<button onclick="signup()">
+Sign Up
+</button>
+
+<button onclick="login()">
+Login
+</button>
+
+</div>
+
+<!-- 🎁 GIFT CLUB -->
+<div class="box">
+
+<h2>🎁 Gift Club Membership</h2>
+
+<p>
+Jiunge kupata offers na discounts maalum.
+</p>
+
+<p>
+💰 Membership Fee:
+<b>15,000 TSh</b>
+</p>
+
+<p>
+💳 Halopesa
+</p>
+
+<p>
+📞 0618779588
+</p>
+
+<button onclick="joinGiftClub()">
+🎁 Join Gift Club
+</button>
+
+</div>
+
+<!-- 👨‍💻 ADMIN PANEL -->
+<div class="box" id="adminPanel">
+
+<h2>👨‍💻 Admin Panel</h2>
+
+<h3>➕ Add Product</h3>
+
+<input id="pname"
+placeholder="Product Name">
+
+<input id="pprice"
+placeholder="Price">
+
+<input id="pcat"
+placeholder="Category">
+
+<input id="pimg"
+placeholder="Image URL">
+
+<button onclick="addProduct()">
+Add Product
+</button>
+
+<h3>📰 Add News</h3>
+
+<input id="ntitle"
+placeholder="News Title">
+
+<textarea id="ncontent"
+placeholder="News Content"></textarea>
+
+<button onclick="addNews()">
+Add News
+</button>
+
+</div>
+
+<!-- 🛒 PRODUCTS -->
+<div class="box">
+
+<h2>🛒 Premium Phones Collection</h2>
+
+<p style="
+color:gold;
+font-size:18px;
+font-weight:bold;
+text-align:center;
+">
+🔥 Special Offer:
+LIPA 100,000 TSh TU kwanza,
+utumie simu kwa miezi 2,
+kisha umalizie baki ya 400,000 TSh 👑
+</p>
+
+<p style="
+text-align:center;
+font-size:16px;
+">
+📞 Kwa taarifa zaidi:
+<b style="color:gold;">
+0618779588
+</b>
+</p>
+
+<div id="products"></div>
+
+</div>
+
+<!-- 📰 NEWS -->
+<div class="box">
+
+<h2>📰 Latest News</h2>
+
+<div id="news"></div>
+
+</div>
+
+<script>
+
+/* 🔥 FIREBASE */
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyBJwcABL0q4clpRwxWXHGlB6d0sSRnsq_Y",
+
+authDomain: "vincenzo-hub.firebaseapp.com",
+
+projectId: "vincenzo-hub",
+
+storageBucket: "vincenzo-hub.firebasestorage.app",
+
+messagingSenderId: "499010425304",
+
+appId: "1:499010425304:web:fa022bd768ccb6854f62ad"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+const db = firebase.firestore();
+
+let isAdmin = false;
+
+/* 🔐 SIGNUP */
+
+function signup(){
+
+auth.createUserWithEmailAndPassword(
+
+email.value,
+password.value
+
+)
+
+.then(()=>{
+
+alert("🔥 Account Created");
+
+})
+
+.catch(e=>alert(e.message));
+
+}
+
+/* 🔐 LOGIN */
+
+function login(){
+
+auth.signInWithEmailAndPassword(
+
+email.value,
+password.value
+
+)
+
+.then(()=>{
+
+if(
+
+email.value==="jacksonmakele3@gmail.com"
+&&
+password.value==="jkm123@@@"
+
+){
+
+isAdmin = true;
+
+adminPanel.style.display = "block";
+
+alert("👑 Welcome Admin");
+
+}
+
+else{
+
+alert("🔥 Login Success");
+
+}
+
+})
+
+.catch(e=>alert(e.message));
+
+}
+
+/* 🎁 GIFT CLUB */
+
+function joinGiftClub(){
+
+alert(
+
+`👑 VINCENZO GIFT CLUB
+
+💰 Membership Fee:
+15,000 TSh
+
+💳 Payment Method:
+Halopesa
+
+📞 Number:
+0618779588
+
+📋 HOW TO JOIN:
+
+1. Open Halopesa
+2. Send 15,000 TSh
+3. Use your real name
+4. Save payment message
+5. Wait for admin approval
+
+🔥 Welcome To Vincenzo Hub 👑`
+
+);
+
+}
+
+/* 🛒 PRODUCTS */
+
+const productsData = [
+
+{
+name:"iPhone 15 Pro Max",
+price:500000,
+cat:"iPhone",
+img:"https://via.placeholder.com/250?text=iPhone+15+Pro+Max"
+},
+
+{
+name:"iPhone 16 Pro Max",
+price:500000,
+cat:"iPhone",
+img:"https://via.placeholder.com/250?text=iPhone+16+Pro+Max"
+},
+
+{
+name:"Samsung S23 Ultra",
+price:500000,
+cat:"Samsung",
+img:"https://via.placeholder.com/250?text=Samsung+S23+Ultra"
+},
+
+{
+name:"Samsung S24 Ultra",
+price:500000,
+cat:"Samsung",
+img:"https://via.placeholder.com/250?text=Samsung+S24+Ultra"
+},
+
+{
+name:"Samsung S25 Ultra",
+price:500000,
+cat:"Samsung",
+img:"https://via.placeholder.com/250?text=Samsung+S25+Ultra"
+},
+
+{
+name:"Samsung Z Fold 5",
+price:500000,
+cat:"Samsung",
+img:"https://via.placeholder.com/250?text=Z+Fold+5"
+},
+
+{
+name:"Samsung Z Fold 6",
+price:500000,
+cat:"Samsung",
+img:"https://via.placeholder.com/250?text=Z+Fold+6"
+},
+
+{
+name:"Samsung Z Flip 6",
+price:500000,
+cat:"Samsung",
+img:"https://via.placeholder.com/250?text=Z+Flip+6"
+}
+
+];
+
+/* 🛒 LOAD PRODUCTS */
+
+function loadProducts(){
+
+let html="";
+
+productsData.forEach(p=>{
+
+html += `
+
+<div class="card">
+
+<img src="${p.img}">
+
+<h3>${p.name}</h3>
+
+<p>${p.cat}</p>
+
+<p class="old-price">
+2,000,000 TSh
+</p>
+
+<p class="new-price">
+${p.price.toLocaleString()} TSh
+</p>
+
+<p>
+✅ Lipa 100,000 TSh kwanza<br>
+✅ Tumia kwa miezi 2<br>
+✅ Malizia 400,000 TSh baadaye
+</p>
+
+<button onclick="orderProduct('${p.name}', ${p.price})">
+
+🛒 Order Now
+
+</button>
+
+</div>
+
+`;
+
+});
+
+products.innerHTML = html;
+
+}
+
+loadProducts();
+
+/* 🛒 ORDER */
+
+function orderProduct(productName, productPrice){
+
+alert(
+
+`👑 VINCENZO HUB ORDER
+
+🛒 Product:
+${productName}
+
+💰 Total Price:
+${productPrice.toLocaleString()} TSh
+
+💵 First Payment:
+100,000 TSh
+
+💳 Payment Method:
+Halopesa
+
+📞 Payment Number:
+0618779588
+
+📋 PAYMENT STEPS:
+
+1. Open Halopesa
+2. Send 100,000 TSh
+3. Use your real name
+4. Save payment message
+5. Wait for admin confirmation
+
+✅ After payment you can receive your phone.
+
+🔥 For more information:
+📞 0618779588
+
+👑 Thank you for shopping with Vincenzo Hub`
+
+);
+
+}
+
+/* ➕ ADD PRODUCT */
+
+function addProduct(){
+
+productsData.push({
+
+name:pname.value,
+
+price:Number(pprice.value),
+
+cat:pcat.value,
+
+img:pimg.value
+
+});
+
+loadProducts();
+
+alert("🔥 Product Added");
+
+}
+
+/* 📰 NEWS */
+
+function loadNews(){
+
+db.collection("news")
+
+.onSnapshot(snap=>{
+
+let html="";
+
+snap.forEach(d=>{
+
+let n=d.data();
+
+html += `
+
+<div class="box">
+
+<h3>${n.title}</h3>
+
+<p>${n.content}</p>
+
+</div>
+
+`;
+
+});
+
+news.innerHTML = html;
+
+});
+
+}
+
+loadNews();
+
+/* ➕ ADD NEWS */
+
+function addNews(){
+
+db.collection("news").add({
+
+title:ntitle.value,
+
+content:ncontent.value
+
+});
+
+alert("🔥 News Added");
+
+}
+
+</script>
+
+</body>
+</html>
+font-size:42px;
+text-shadow:0 0 15px gold;
+margin-top:15px;
+}
+
+h2,h3{
+color:gold;
+}
+
+.box{
+background:#111;
+border:1px solid gold;
+border-radius:15px;
+padding:15px;
+margin:15px 0;
+box-shadow:0 0 10px rgba(255,215,0,0.4);
+}
+
+input, textarea{
+width:95%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+background:#222;
+color:white;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:gold;
+color:black;
+font-weight:bold;
+cursor:pointer;
+font-size:16px;
+}
+
+#products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:15px;
+}
+
+.card{
+padding:10px;
+border-radius:15px;
+background:#1a1a1a;
+border:1px solid gold;
+text-align:center;
+box-shadow:0 0 10px rgba(255,215,0,0.3);
+}
+
+.card img{
+width:160px;
+height:160px;
+border-radius:10px;
+}
+
+.old-price{
+color:gray;
+text-decoration:line-through;
+}
+
+.new-price{
+color:gold;
+font-size:22px;
+font-weight:bold;
+}
+
+#adminPanel{
+display:none;
+}
+
 #mainContent{
 display:none;
 }
@@ -1177,7 +1752,21 @@ html += `
 `;
 
 });
+<!-- 💬 WHATSAPP BUTTON -->
 
+<a href="https://wa.me/255618779588" target="_blank">
+
+<button style="
+background:#25D366;
+color:white;
+font-size:18px;
+">
+
+💬 Chat on WhatsApp
+
+</button>
+
+</a>
 news.innerHTML = html;
 
 });
